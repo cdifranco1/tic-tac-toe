@@ -35,22 +35,24 @@ let model = {
 
 //Display functions
 
-function clickHandler(element){
-    if (model.playerMarker == 1 && model.board[i] == 0){
-        element.classList.add("0-img")
-    } else if (model.playerMarker == 2 && model.board[i] == 0){
+function clickHandler(e){
+    let element = e.target
+    if (model.playerMarker == 1 && model.board[element.id] == 0){
+        element.classList.add("o-img")
+    } else if (model.playerMarker == 2 && model.board[element.id] == 0){
         element.classList.add("x-img")
-    } else if (model.board[i] == 0){alert("Select X or O.")}
+    } else if (model.playerMarker == 0){alert("Select X or O.")}
     model.updateBoard(element)
     placeComputer(model.board)
     displayComputer(model.board)
+    console.log(model.board)
 };
 
 function setBoard(){
     let arr = Array.from(document.getElementsByClassName("square"))
     for (let i=0; i < arr.length; i++){
         arr[i].setAttribute("id", i);
-        arr[i].onclick = clickHandler(array[i])
+        arr[i].onclick = clickHandler
     }
     let o = document.getElementById("o-selector");
     let x = document.getElementById("x-selector");
@@ -61,7 +63,7 @@ function setBoard(){
                 model.playerMarker = 1;
                 model.computerMarker = 2;
                 x.style.border = "1px solid black"
-                computer.setAttribute("class","selectors x-img")
+                computer.classList.add("x-img")
         }
     }
     x.onclick = function(){
@@ -70,7 +72,7 @@ function setBoard(){
             model.playerMarker = 2;
             model.computerMarker = 1;
             o.style.border = "1px solid black"
-            computer.setAttribute("class","selectors o-img")
+            computer.classList.add("o-img")
         }
     }
 };
@@ -81,9 +83,9 @@ function displayComputer(board){
     let boardArr = Array.from(document.getElementsByClassName("square"));
     for (let i = 0; i < board.length; i++){
         if(board[i] == 1){
-            boardArr[i].setAttribute("class", "square o-img")
+            boardArr[i].classList.add("o-img")
         } else if (board[i] == 2){
-            boardArr[i].setAttribute("class", "square x-img")
+            boardArr[i].classList.add("x-img")
         }
     }
 }
