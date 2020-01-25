@@ -22,6 +22,7 @@ let model = {
     },
     checkWinner: function(){
 
+
     },
     updateBoard: function(element){
         let index = element.id
@@ -33,8 +34,8 @@ let model = {
 
 
 
-//Display functions
 
+//Handles board clicks when a player selects a move
 function clickHandler(e){
     let element = e.target
     if (model.playerMarker == 1 && model.board[element.id] == 0){
@@ -43,11 +44,15 @@ function clickHandler(e){
         element.classList.add("x-img")
     } else if (model.playerMarker == 0){alert("Select X or O.")}
     model.updateBoard(element)
-    placeComputer(model.board)
-    displayComputer(model.board)
+    // placeComputer(model.board)
+    // displayComputer(model.board)
     console.log(model.board)
+    checkWinner(model.board, model.playerMarker)
+    checkWinner(model.board, model.computerMarker)
 };
 
+
+//Sets board to handle clicks
 function setBoard(){
     let arr = Array.from(document.getElementsByClassName("square"))
     for (let i=0; i < arr.length; i++){
@@ -65,7 +70,7 @@ function setBoard(){
                 x.style.border = "1px solid black"
                 computer.classList.add("x-img")
         }
-    }
+    };
     x.onclick = function(){
         if(model.playerMarker == 0){
             x.style.border = "3px solid black"
@@ -91,8 +96,6 @@ function displayComputer(board){
 }
 
 
-
-
 function placeComputer(board){
     let newArr = board;
     let slice;
@@ -107,6 +110,26 @@ function placeComputer(board){
         }
     }
     model.board = newArr.flat();
+};
+
+
+
+function checkWinner(board, player){
+    for (let i = 0; i<board.length; i++){
+        if (i % 3 == 0){
+            let slice = board.slice(i, i+3);
+            let winner = slice.reduce((a, b) => {
+                if (b == player) {
+                    a = b;
+                    return a;
+                }}, 0)
+            if (winner == model.playerMarker){
+                console.log("You win")
+            } else if (winner == model.computerMarker){
+                console.log("Computer wins")
+            }
+        }
+    }
 };
 
 
