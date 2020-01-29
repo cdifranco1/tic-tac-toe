@@ -22,16 +22,6 @@ let model = {
         1: "o-img",
         2: "x-img",
     },
-    winCombos: [
-        [0, 1, 2],
-        [0, 3, 7],
-        [0, 4, 8],
-        [1, 4, 7],
-        [2, 5, 8],
-        [2, 4, 6],
-        [3, 4, 5],
-        [6, 7, 9],
-    ],
     checkWinner: function(){
 
 
@@ -55,11 +45,12 @@ function clickHandler(e){
     } else if (model.playerMarkers.user == 2 && model.board[element.id] == 0){
         element.classList.add("x-img")
     } else if (model.playerMarkers.user == 0){alert("Select X or O.")}
-    model.updateBoard(element)
-    placeComputer(model.board)
-    displayComputer(model.board)
-    console.log(model.board)
-    checkWinner(model.board, model.playerMarkers)
+    if(!model.playerMarkers.user == 0){
+        model.updateBoard(element)
+        placeComputer(model.board)
+        displayComputer(model.board)
+        checkWinner(model.board, model.playerMarkers)
+    }
 };
 
 
@@ -106,22 +97,17 @@ function displayComputer(board){
     }
 }
 
-// selects computer's place on the board
+//Updated placeComputer function
 function placeComputer(board){
     let newArr = board;
-    let slice;
-    for (let i = 0; i < board.length; i++){
-        if (i == 0 || i % 3 == 0){
-            slice = board.slice(i, i + 3);
-            if (slice.reduce((a,b)=>a+b) == 0) {
-                slice[1] = model.playerMarkers.computer;
-                newArr.splice(i, 3, slice)
-                break;
-            }
-        }
-    }
-    model.board = newArr.flat();
+    let space = Math.round(Math.random() * (newArr.length - 1))
+    if (newArr[space] === 0){
+        newArr[space] = model.playerMarkers.computer;
+    } else {placeComputer(newArr)}
+    model.board = newArr;
 };
+
+
 
 
 // Need to pass in a function that ends the game once there is a winner
@@ -132,8 +118,10 @@ function checkWinner(board, playerMarker){
         vertical.push(board[i], board[i+3], board[i+6])
         if (vertical.every(value => value === playerMarker.user)){
            alert("You win!")
+           gameOver();
         } else if (vertical.every(value => value === playerMarker.computer)){
             alert("You lose!")
+            gameOver();
         } vertical = [];
     };
     for (let i = 0; i < board.length; i++){
@@ -142,12 +130,50 @@ function checkWinner(board, playerMarker){
         }
         if (row.every(value => value === playerMarker.user)){
             alert("You win!")
-            break;
+            gameOver()
+            break; // need to figure out why this is alerting three times without the break
         } else if (row.every(value => value === playerMarker.computer)){
-            alert("You lose!")
-            break;
+            alert("You lose!") 
+            gameOver();
+            break; // need to figure out why this is alerting three times without the break
         }
     };
+    let diagonal = [board[0], board[4], board[8]];
+    let reverseDiag = [board[2], board[4], board[6]];
+    if (diagonal.every(value => value === playerMarker.user) || reverseDiag.every(value => value === playerMarker.user)){
+        alert("You win!")
+        gameOver()
+    } else if (diagonal.every(value => value === playerMarker.computer) || reverseDiag.every(value => value === playerMarker.computer)){
+        alert("You lose!")
+        gameOver();
+    }
 };
 
 
+//reset display and model
+function gameOver(){
+    resetDisplay()
+    resetModel()
+};
+  
+//reset display function
+function resetDisplay(){
+    let boardSpaces = Array.from(document.getElementsByClassName("square"))
+    for (let i = 0; i < boardSpaces.length; i++){
+        boardSpaces[i].classList = "square"
+    };
+    let selectors = Array.from(document.getElementsByClassName("selectors"));
+    for (let i = 0; i < selectors.length; i++){
+        selectors[i].style.border = "1px solid black"
+    };
+    let computer = document.getElementById("computer-marker");
+    computer.classList = "selectors"
+};
+
+//reset model function
+function resetModel(){
+    let blankArr = new Array(9).fill(0)
+    model.board = blankArr;
+    model.playerMarkers.user = 0;
+    model.playerMarkers.computer = 0;
+};
