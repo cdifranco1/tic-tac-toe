@@ -38,7 +38,7 @@ let model = {
     },
     updateBoard: function(element){
         let index = element.id
-        this.board[index] = this.playerMarker
+        this.board[index] = this.playerMarkers.user
     },
     computerMove: function(){}
 
@@ -59,8 +59,7 @@ function clickHandler(e){
     placeComputer(model.board)
     displayComputer(model.board)
     console.log(model.board)
-    checkWinner(model.board, model.playerMarkers.user)
-    checkWinner(model.board, model.playerMarkers.computer)
+    checkWinner(model.board, model.playerMarkers)
 };
 
 
@@ -95,7 +94,7 @@ function setBoard(){
 };
 
 
-
+// displays the computer's move
 function displayComputer(board){
     let boardArr = Array.from(document.getElementsByClassName("square"));
     for (let i = 0; i < board.length; i++){
@@ -107,7 +106,7 @@ function displayComputer(board){
     }
 }
 
-
+// selects computer's place on the board
 function placeComputer(board){
     let newArr = board;
     let slice;
@@ -125,22 +124,30 @@ function placeComputer(board){
 };
 
 
-
-// function checkWinner(board, playerMarkers){
-//     var checkArray = [];
-//     for (let i = 0; i<board.length; i++){
-//         if (i % 3 == 0){
-//             let row = board.slice(i, i+3);
-//             if(row.every((el, index, arr)=>{
-//                 if (index == 0){
-//                     return true;
-//                 } else if (el == player == arr[index-1]){
-//                     return true;
-//             }})){
-//                 if (pla
-//             }
-//         }
-//     }
-// }
+// Need to pass in a function that ends the game once there is a winner
+function checkWinner(board, playerMarker){
+    let vertical = [];
+    let row = [];
+    for (let i = 0; i < 3; i++){
+        vertical.push(board[i], board[i+3], board[i+6])
+        if (vertical.every(value => value === playerMarker.user)){
+           alert("You win!")
+        } else if (vertical.every(value => value === playerMarker.computer)){
+            alert("You lose!")
+        } vertical = [];
+    };
+    for (let i = 0; i < board.length; i++){
+        if (i % 3 == 0){
+            row = board.slice(i, i+3);
+        }
+        if (row.every(value => value === playerMarker.user)){
+            alert("You win!")
+            break;
+        } else if (row.every(value => value === playerMarker.computer)){
+            alert("You lose!")
+            break;
+        }
+    };
+};
 
 
